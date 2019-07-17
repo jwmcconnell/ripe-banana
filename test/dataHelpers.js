@@ -4,6 +4,7 @@ const seedData = require('./seedData');
 const connect = require('../lib/utils/connect');
 
 const Studio = require('../lib/models/Studio');
+const Actor = require('../lib/models/Actor');
 
 beforeAll(() => {
   return connect();
@@ -27,6 +28,13 @@ const getStudio = () => {
     .then(studio => JSON.parse(JSON.stringify(studio)));
 };
 
+const getActor = () => {
+  return Actor
+    .findOne()
+    .then(actor => JSON.parse(JSON.stringify(actor)));
+};
+
 module.exports = {
-  getStudio
+  getStudio,
+  getActor
 };

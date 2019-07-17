@@ -1,4 +1,4 @@
-require('./dataHelpers');
+const { getActor } = require('./dataHelpers');
 const request = require('supertest');
 const app = require('../lib/app');
 
@@ -29,6 +29,19 @@ describe('actor routes', () => {
       .then(res => {
         expect(res.body).toEqual(expect.any(Array));
         expect(res.body[0]).toEqual(expect.objectContaining({
+          _id: expect.any(String),
+          name: expect.any(String),
+          __v: 0
+        }));
+      });
+  });
+
+  it('returns an actor by their id', async() => {
+    const { _id } = await getActor();
+    return request(app)
+      .get(`/api/v1/actors/${_id}`)
+      .then(res => {
+        expect(res.body).toEqual(expect.objectContaining({
           _id: expect.any(String),
           name: expect.any(String),
           __v: 0
