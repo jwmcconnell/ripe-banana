@@ -1,5 +1,6 @@
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
+const Reviewer = require('../lib/models/Reviewer');
 
 const seedStudios = [
   {
@@ -26,6 +27,17 @@ const seedActors = [
   }
 ];
 
+const seedReviewers = [
+  {
+    name: 'Todd',
+    company: 'Todd`s reviews'
+  },
+  {
+    name: 'Felix',
+    company: 'New York Times'
+  }
+];
+
 function seedData() {
   return Promise.all(seedStudios.map(studio => {
     const { name, address } = studio;
@@ -35,6 +47,12 @@ function seedData() {
       return Promise.all(seedActors.map(actor => {
         const { name, dob, pob } = actor;
         return Actor.create({ name, dob, pob });
+      }));
+    })
+    .then(() => {
+      return Promise.all(seedReviewers.map(reviewer => {
+        const { name, company } = reviewer;
+        return Reviewer.create({ name, company });
       }));
     });
 }
