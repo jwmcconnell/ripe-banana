@@ -15,14 +15,7 @@ describe('film routes', () => {
         title: 'lance`s movie',
         studio: studio._id,
         released: 2019,
-        cast: [
-          {
-            actor: actors[0]._id
-          },
-          {
-            actor: actors[1]._id
-          }
-        ]
+        cast: [{ actor: actors[0]._id }, { actor: actors[1]._id }]
       })
       .then(res => {
         expect(res.body).toEqual({
