@@ -48,4 +48,25 @@ describe('actor routes', () => {
         }));
       });
   });
+
+  it('updates and returns the updated actor', async() => {
+    const myDate = new Date(99, 5, 8);
+    const { _id } = await getActor();
+    return request(app)
+      .put(`/api/v1/actors/${_id}`)
+      .send({
+        name: 'updated-name',
+        dob: myDate,
+        pob: 'Columbus'
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          name: 'updated-name',
+          dob: myDate.toISOString(),
+          pob: 'Columbus',
+          __v: 0
+        });
+      });
+  });
 });
