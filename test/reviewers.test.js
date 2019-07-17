@@ -19,4 +19,18 @@ describe('reviewer routes', () => {
         });
       });
   });
+
+  it('returns a list of reviewers', () => {
+    return request(app)
+      .get('/api/v1/reviewers')
+      .then(res => {
+        expect(res.body).toEqual(expect.any(Array));
+        expect(res.body[0]).toEqual({
+          _id: expect.any(String),
+          name: expect.any(String),
+          company: expect.any(String),
+          __v: 0
+        });
+      });
+  });
 });
