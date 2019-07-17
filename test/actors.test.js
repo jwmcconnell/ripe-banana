@@ -22,4 +22,17 @@ describe('actor routes', () => {
         }));
       });
   });
+
+  it('returns a list of all actors', () => {
+    return request(app)
+      .get('/api/v1/actors')
+      .then(res => {
+        expect(res.body).toEqual(expect.any(Array));
+        expect(res.body[0]).toEqual(expect.objectContaining({
+          _id: expect.any(String),
+          name: expect.any(String),
+          __v: 0
+        }));
+      });
+  });
 });
