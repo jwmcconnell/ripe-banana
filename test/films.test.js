@@ -25,7 +25,7 @@ describe('film routes', () => {
         ]
       })
       .then(res => {
-        expect(res.body).toEqual(expect.objectContaining({
+        expect(res.body).toEqual({
           _id: expect.any(String),
           title: 'lance`s movie',
           studio: studio._id.toString(),
@@ -39,7 +39,7 @@ describe('film routes', () => {
             })
           ],
           __v: 0
-        }));
+        });
       });
   });
 });
