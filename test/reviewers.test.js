@@ -47,4 +47,22 @@ describe('reviewer routes', () => {
         });
       });
   });
+
+  it('updates and returs a reviewer by their id', async() => {
+    const { _id } = await getReviewer();
+    return request(app)
+      .put(`/api/v1/reviewers/${_id}`)
+      .send({
+        name: 'updated-name',
+        company: 'updated-company'
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id,
+          name: 'updated-name',
+          company: 'updated-company',
+          __v: 0
+        });
+      });
+  });
 });
