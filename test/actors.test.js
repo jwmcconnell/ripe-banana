@@ -42,7 +42,7 @@ describe('actor routes', () => {
       .get(`/api/v1/actors/${_id}`)
       .then(res => {
         expect(res.body).toEqual(expect.objectContaining({
-          _id: expect.any(String),
+          _id,
           name: expect.any(String),
           __v: 0
         }));
@@ -61,7 +61,7 @@ describe('actor routes', () => {
       })
       .then(res => {
         expect(res.body).toEqual({
-          _id: expect.any(String),
+          _id,
           name: 'updated-name',
           dob: myDate.toISOString(),
           pob: 'Columbus',

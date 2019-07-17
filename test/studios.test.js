@@ -42,7 +42,7 @@ describe('studio routes', () => {
       .get(`/api/v1/studios/${_id}`)
       .then(res => {
         expect(res.body).toEqual(expect.objectContaining({
-          _id: expect.any(String),
+          _id,
           name: expect.any(String),
           __v: 0
         }));
