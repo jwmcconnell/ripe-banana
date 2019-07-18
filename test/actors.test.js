@@ -31,7 +31,6 @@ describe('actor routes', () => {
         expect(res.body[0]).toEqual(expect.objectContaining({
           _id: expect.any(String),
           name: expect.any(String),
-          __v: 0
         }));
       });
   });
