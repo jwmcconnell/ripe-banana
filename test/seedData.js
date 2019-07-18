@@ -4,7 +4,12 @@ const Reviewer = require('../lib/models/Reviewer');
 
 const seedStudios = [
   {
-    name: 'Fox'
+    name: 'Fox',
+    address: {
+      city: 'Hollywood',
+      state: 'California',
+      country: 'USA'
+    }
   },
   {
     name: 'Black Box',
