@@ -52,11 +52,29 @@ describe('film routes', () => {
       released: 2010,
       cast: [{ actor: actors[1]._id }]
     }]);
+
+    let filmsWithStudio = [
+      {
+        _id: films[0]._id,
+        title: 'Crazy Film',
+        studio: { _id: studio[0]._id, name: studio[0].name },
+        released: 2014,
+      },
+      {
+        _id: films[1]._id,
+        title: 'Great Film',
+        studio: { _id: studio[1]._id, name: studio[1].name },
+        released: 2010,
+      }
+    ];
     return request(app)
       .get('/api/v1/films')
       .then(res => {
-        const filmsJSON = JSON.parse(JSON.stringify(films));
+        expect(res.body).toEqual(expect.any(Array));
+        const filmsJSON = JSON.parse(JSON.stringify(filmsWithStudio));
         filmsJSON.forEach(f => {
+          delete f.__v;
+          delete f.cast;
           expect(res.body).toContainEqual(f);
         });
       });
