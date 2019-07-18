@@ -78,8 +78,13 @@ describe('studio routes', () => {
     return request(app)
       .get(`/api/v1/studios/${studio._id}`)
       .then(res => {
+        console.log(res.body.films);
         const filmsJSON = JSON.parse(JSON.stringify(films));
         filmsJSON.forEach(film => {
+          delete film.studio;
+          delete film.cast;
+          delete film.released;
+          delete film.__v;
           expect(res.body.films).toContainEqual(film);
         });
         expect(res.body).toEqual({
