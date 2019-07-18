@@ -75,8 +75,6 @@ describe('film routes', () => {
         expect(res.body).toEqual(expect.any(Array));
         const filmsJSON = JSON.parse(JSON.stringify(filmsWithStudio));
         filmsJSON.forEach(f => {
-          delete f.__v;
-          delete f.cast;
           expect(res.body).toContainEqual(f);
         });
       });
