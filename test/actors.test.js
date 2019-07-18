@@ -1,6 +1,9 @@
 const { getActor } = require('./dataHelpers');
 const request = require('supertest');
 const app = require('../lib/app');
+const Studio = require('../lib/models/Studio');
+const Actor = require('../lib/models/Actor');
+const Film = require('../lib/models/Film');
 
 describe('actor routes', () => {
   it('creates and returns an actor', () => {
@@ -36,15 +39,38 @@ describe('actor routes', () => {
   });
 
   it('returns an actor by their id', async() => {
-    const { _id } = await getActor();
+    const actors = await Actor.create([
+      { name: 'somename', dob: new Date('03-18-1996'), pob: 'Cleveland' },
+      { name: 'othername' }
+    ]);
+    const studio = await Studio.create([{ name: 'studio-name' }, { name: 'other-studio-name' }]);
+    await Film.create([{
+      title: 'Crazy Film',
+      studio: studio[0]._id,
+      released: 2014,
+      cast: [{ actor: actors[0]._id, role: 'Lead' }, { actor: actors[1]._id, role: 'Supporting' }]
+    },
+    {
+      title: 'Great Film',
+      studio: studio[1]._id,
+      released: 2010,
+      cast: [{ actor: actors[1]._id }]
+    }]);
+
     return request(app)
-      .get(`/api/v1/actors/${_id}`)
+      .get(`/api/v1/actors/${actors[0]._id}`)
       .then(res => {
-        expect(res.body).toEqual(expect.objectContaining({
-          _id,
+        expect(res.body).toEqual({
           name: expect.any(String),
-          __v: 0
-        }));
+          dob: expect.any(String),
+          pob: expect.any(String),
+          films: expect.any(Array)
+        });
+        expect(res.body.films[0]).toEqual({
+          _id: expect.any(String),
+          title: expect.any(String),
+          released: expect.any(Number)
+        });
       });
   });
 
