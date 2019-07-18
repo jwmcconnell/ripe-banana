@@ -28,11 +28,10 @@ describe('studio routes', () => {
       .get('/api/v1/studios')
       .then(res => {
         expect(res.body).toEqual(expect.any(Array));
-        expect(res.body[0]).toEqual(expect.objectContaining({
+        expect(res.body[0]).toEqual({
           _id: expect.any(String),
-          name: expect.any(String),
-          __v: 0
-        }));
+          name: expect.any(String)
+        });
       });
   });
 
