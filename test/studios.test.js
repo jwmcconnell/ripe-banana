@@ -39,19 +39,6 @@ describe('studio routes', () => {
       });
   });
 
-  it('returns a studio by its id', async() => {
-    const { _id } = await getStudio();
-    return request(app)
-      .get(`/api/v1/studios/${_id}`)
-      .then(res => {
-        expect(res.body).toEqual(expect.objectContaining({
-          _id,
-          name: expect.any(String),
-          films: expect.any(Array)
-        }));
-      });
-  });
-
   it('returns a studio with its films by id', async() => {
     const actors = await Actor.create([{ name: 'somename' }, { name: 'othername' }]);
     const studio = await Studio.create({
