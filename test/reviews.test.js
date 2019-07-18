@@ -72,7 +72,7 @@ describe('review routes', () => {
     for(let i = 0; i < manyReviews.length; i++) {
       manyReviews[i] = i;
     }
-    // console.log(manyReviews);
+
     await Promise.all(manyReviews.map((review, i) => {
       return Review.create({
         rating: 3,
@@ -82,11 +82,9 @@ describe('review routes', () => {
       });
     }));
 
-    // Review.find({}).then(console.log);
     return request(app)
       .get('/api/v1/reviews')
       .then(res => {
-        // console.log(res.body);
         expect(res.body).toEqual(expect.any(Array));
         expect(res.body.length).toEqual(100);
         expect(res.body[0]).toEqual({
