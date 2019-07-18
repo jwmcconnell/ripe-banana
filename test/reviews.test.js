@@ -67,11 +67,28 @@ describe('review routes', () => {
       });
   });
 
-  it('returns a list of reviews limited to the 100 most recent', () => {
+  it('returns a list of reviews limited to the 100 most recent', async() => {
+    let manyReviews = new Array(150);
+    for(let i = 0; i < manyReviews.length; i++) {
+      manyReviews[i] = i;
+    }
+    // console.log(manyReviews);
+    await Promise.all(manyReviews.map((review, i) => {
+      return Review.create({
+        rating: 3,
+        reviewer: reviewer._id,
+        review: i.toString(),
+        film: film._id
+      });
+    }));
+
+    // Review.find({}).then(console.log);
     return request(app)
       .get('/api/v1/reviews')
       .then(res => {
+        // console.log(res.body);
         expect(res.body).toEqual(expect.any(Array));
+        expect(res.body.length).toEqual(100);
         expect(res.body[0]).toEqual({
           _id: expect.any(String),
           rating: expect.any(Number),
