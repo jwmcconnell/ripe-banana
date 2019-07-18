@@ -4,6 +4,7 @@ const app = require('../lib/app');
 
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
+const Film = require('../lib/models/Film');
 
 describe('film routes', () => {
   it('creates and returns a film', async() => {
@@ -32,6 +33,31 @@ describe('film routes', () => {
             })
           ],
           __v: 0
+        });
+      });
+  });
+
+  it('returns a list of all films', async() => {
+    const actors = await Actor.create([{ name: 'somename' }, { name: 'othername' }]);
+    const studio = await Studio.create([{ name: 'studio-name' }, { name: 'other-studio-name' }]);
+    const films = await Film.create([{
+      title: 'Crazy Film',
+      studio: studio[0]._id,
+      released: 2014,
+      cast: [{ actor: actors[0]._id }, { actor: actors[1]._id }]
+    },
+    {
+      title: 'Great Film',
+      studio: studio[1]._id,
+      released: 2010,
+      cast: [{ actor: actors[1]._id }]
+    }]);
+    return request(app)
+      .get('/api/v1/films')
+      .then(res => {
+        const filmsJSON = JSON.parse(JSON.stringify(films));
+        filmsJSON.forEach(f => {
+          expect(res.body).toContainEqual(f);
         });
       });
   });
