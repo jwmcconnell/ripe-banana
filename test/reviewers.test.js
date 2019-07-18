@@ -76,7 +76,6 @@ describe('reviewer routes', () => {
   });
 
   it('returns a reviewer by their id', async() => {
-    // const { _id, name, company } = await getReviewer();
     return request(app)
       .get(`/api/v1/reviewers/${reviewer._id}`)
       .then(res => {
