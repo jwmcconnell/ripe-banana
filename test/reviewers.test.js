@@ -29,7 +29,6 @@ describe('reviewer routes', () => {
           _id: expect.any(String),
           name: expect.any(String),
           company: expect.any(String),
-          __v: 0
         });
       });
   });
