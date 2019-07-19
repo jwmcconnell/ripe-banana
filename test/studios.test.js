@@ -101,6 +101,26 @@ describe('studio routes', () => {
 
   it('deletes and returns the deleted studio', () => {
     return request(app)
-      .delete('/api/v1/studios/stuio');
+      .delete(`/api/v1/studios/${studios[1]._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: studios[1]._id.toString(),
+          name: 'delete-studio',
+          address: {
+            city: 'deletecity',
+            state: 'deletestate',
+            country: 'deletecountry'
+          },
+          __v: 0
+        });
+      });
+  });
+
+  it('returns an error when trying to delete a studio which has a film', () => {
+    return request(app)
+      .delete(`/api/v1/studios/${studios[0]._id}`)
+      .then(res => {
+        expect(res.status).toEqual(409);
+      });
   });
 });
