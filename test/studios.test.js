@@ -8,26 +8,35 @@ const Film = require('../lib/models/Film');
 
 describe('studio routes', () => {
   let films;
-  let studio;
+  let studios;
   beforeEach(async() => {
     const actors = await Actor.create([{ name: 'somename' }, { name: 'othername' }]);
-    studio = await Studio.create({
+    studios = await Studio.create([{
       name: 'studio-name',
       address: {
         city: 'somecity',
         state: 'somestate',
         country: 'somecountry'
       }
-    });
+    },
+    {
+      name: 'delete-studio',
+      address: {
+        city: 'deletecity',
+        state: 'deletestate',
+        country: 'deletecountry'
+      }
+    }
+    ]);
     films = await Film.create([{
       title: 'Crazy Film',
-      studio: studio._id,
+      studio: studios[0]._id,
       released: 2014,
       cast: [{ actor: actors[0]._id }, { actor: actors[1]._id }]
     },
     {
       title: 'Great Film',
-      studio: studio._id,
+      studio: studios[0]._id,
       released: 2010,
       cast: [{ actor: actors[1]._id }]
     }]);
@@ -67,7 +76,7 @@ describe('studio routes', () => {
 
   it('returns a studio with its films by id', async() => {
     return request(app)
-      .get(`/api/v1/studios/${studio._id}`)
+      .get(`/api/v1/studios/${studios[0]._id}`)
       .then(res => {
         const filmsJSON = JSON.parse(JSON.stringify(films));
         filmsJSON.forEach(film => {
@@ -78,7 +87,7 @@ describe('studio routes', () => {
           expect(res.body.films).toContainEqual(film);
         });
         expect(res.body).toEqual({
-          _id: studio._id.toString(),
+          _id: studios[0]._id.toString(),
           name: 'studio-name',
           address: {
             city: 'somecity',
@@ -88,5 +97,10 @@ describe('studio routes', () => {
           films: expect.any(Array)
         });
       });
+  });
+
+  it('deletes and returns the deleted studio', () => {
+    return request(app)
+      .delete('/api/v1/studios/stuio');
   });
 });
