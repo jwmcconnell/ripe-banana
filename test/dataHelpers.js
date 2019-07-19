@@ -6,6 +6,7 @@ const connect = require('../lib/utils/connect');
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
 const Reviewer = require('../lib/models/Reviewer');
+const Film = require('../lib/models/Film');
 
 beforeAll(() => {
   return connect();
@@ -41,8 +42,15 @@ const getReviewer = () => {
     .then(reviewer => JSON.parse(JSON.stringify(reviewer)));
 };
 
+const getFilm = () => {
+  return Film
+    .findOne()
+    .then(film => JSON.parse(JSON.stringify(film)));
+};
+
 module.exports = {
   getStudio,
   getActor,
-  getReviewer
+  getReviewer,
+  getFilm
 };

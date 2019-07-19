@@ -1,4 +1,4 @@
-require('./dataHelpers');
+const { getFilm } = require('./dataHelpers');
 const request = require('supertest');
 const app = require('../lib/app');
 
@@ -9,8 +9,27 @@ const Reviewer = require('../lib/models/Reviewer');
 const Film = require('../lib/models/Film');
 
 describe('film routes', () => {
-  it('creates and returns a film', async() => {
+  let films;
+  let studios;
+  beforeEach(async() => {
     const actors = await Actor.create([{ name: 'somename' }, { name: 'othername' }]);
+    studios = await Studio.create([{ name: 'studio-name' }, { name: 'other-studio-name' }]);
+    films = await Film.create([{
+      title: 'Crazy Film',
+      studio: studios[0]._id,
+      released: 2014,
+      cast: [{ actor: actors[0]._id, role: 'Lead' }, { actor: actors[1]._id, role: 'Supporting' }]
+    },
+    {
+      title: 'Great Film',
+      studio: studios[1]._id,
+      released: 2010,
+      cast: [{ actor: actors[1]._id, role: 'Lead' }]
+    }]);
+  });
+
+  it('creates and returns a film', async() => {
+    const actors = await Actor.create([{ name: 'sally' }, { name: 'jacob' }]);
     const studio = await Studio.create({ name: 'studio-name' });
     return request(app)
       .post('/api/v1/films')
@@ -40,32 +59,17 @@ describe('film routes', () => {
   });
 
   it('returns a list of all films', async() => {
-    const actors = await Actor.create([{ name: 'somename' }, { name: 'othername' }]);
-    const studio = await Studio.create([{ name: 'studio-name' }, { name: 'other-studio-name' }]);
-    const films = await Film.create([{
-      title: 'Crazy Film',
-      studio: studio[0]._id,
-      released: 2014,
-      cast: [{ actor: actors[0]._id }, { actor: actors[1]._id }]
-    },
-    {
-      title: 'Great Film',
-      studio: studio[1]._id,
-      released: 2010,
-      cast: [{ actor: actors[1]._id }]
-    }]);
-
     let filmsWithStudio = [
       {
         _id: films[0]._id,
         title: 'Crazy Film',
-        studio: { _id: studio[0]._id, name: studio[0].name },
+        studio: { _id: studios[0]._id, name: studios[0].name },
         released: 2014,
       },
       {
         _id: films[1]._id,
         title: 'Great Film',
-        studio: { _id: studio[1]._id, name: studio[1].name },
+        studio: { _id: studios[1]._id, name: studios[1].name },
         released: 2010,
       }
     ];
@@ -81,21 +85,6 @@ describe('film routes', () => {
   });
 
   it('returns a film retrieved by it`s _id', async() => {
-    const actors = await Actor.create([{ name: 'somename' }, { name: 'othername' }]);
-    const studio = await Studio.create([{ name: 'studio-name' }, { name: 'other-studio-name' }]);
-    const films = await Film.create([{
-      title: 'Crazy Film',
-      studio: studio[0]._id,
-      released: 2014,
-      cast: [{ actor: actors[0]._id, role: 'Lead' }, { actor: actors[1]._id, role: 'Supporting' }]
-    },
-    {
-      title: 'Great Film',
-      studio: studio[1]._id,
-      released: 2010,
-      cast: [{ actor: actors[1]._id }]
-    }]);
-
     const reviewer = await Reviewer.create({ name: 'jack-reviewer', company: 'jacks-reviews' });
     await Review.create([
       {
@@ -119,7 +108,7 @@ describe('film routes', () => {
         expect(res.body).toEqual({
           title: 'Crazy Film',
           studio: {
-            _id: studio[0]._id.toString(),
+            _id: studios[0]._id.toString(),
             name: 'studio-name'
           },
           released: 2014,
@@ -142,6 +131,22 @@ describe('film routes', () => {
             _id: expect.any(String),
             name: expect.any(String)
           }
+        });
+      });
+  });
+
+  it('deletes and returns a film', async() => {
+    const { _id } = await getFilm();
+    return request(app)
+      .delete(`/api/v1/films/${_id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          title: expect.any(String),
+          studio: expect.any(String),
+          released: expect.any(Number),
+          cast: expect.any(Array),
+          __v: 0
         });
       });
   });
