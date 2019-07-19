@@ -7,6 +7,32 @@ const Actor = require('../lib/models/Actor');
 const Film = require('../lib/models/Film');
 
 describe('studio routes', () => {
+  let films;
+  let studio;
+  beforeEach(async() => {
+    const actors = await Actor.create([{ name: 'somename' }, { name: 'othername' }]);
+    studio = await Studio.create({
+      name: 'studio-name',
+      address: {
+        city: 'somecity',
+        state: 'somestate',
+        country: 'somecountry'
+      }
+    });
+    films = await Film.create([{
+      title: 'Crazy Film',
+      studio: studio._id,
+      released: 2014,
+      cast: [{ actor: actors[0]._id }, { actor: actors[1]._id }]
+    },
+    {
+      title: 'Great Film',
+      studio: studio._id,
+      released: 2010,
+      cast: [{ actor: actors[1]._id }]
+    }]);
+  });
+
   it('creates a studio and returns it', () => {
     return request(app)
       .post('/api/v1/studios')
@@ -40,28 +66,6 @@ describe('studio routes', () => {
   });
 
   it('returns a studio with its films by id', async() => {
-    const actors = await Actor.create([{ name: 'somename' }, { name: 'othername' }]);
-    const studio = await Studio.create({
-      name: 'studio-name',
-      address: {
-        city: 'somecity',
-        state: 'somestate',
-        country: 'somecountry'
-      }
-    });
-    const films = await Film.create([{
-      title: 'Crazy Film',
-      studio: studio._id,
-      released: 2014,
-      cast: [{ actor: actors[0]._id }, { actor: actors[1]._id }]
-    },
-    {
-      title: 'Great Film',
-      studio: studio._id,
-      released: 2010,
-      cast: [{ actor: actors[1]._id }]
-    }]);
-
     return request(app)
       .get(`/api/v1/studios/${studio._id}`)
       .then(res => {
