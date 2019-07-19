@@ -10,7 +10,8 @@ describe('actor routes', () => {
   beforeEach(async() => {
     actors = await Actor.create([
       { name: 'somename', dob: new Date('03-18-1996'), pob: 'Cleveland' },
-      { name: 'othername' }
+      { name: 'othername' },
+      { name: 'to-be-deleted' }
     ]);
     const studio = await Studio.create([{ name: 'studio-name' }, { name: 'other-studio-name' }]);
     await Film.create([{
@@ -95,6 +96,26 @@ describe('actor routes', () => {
           pob: 'Columbus',
           __v: 0
         });
+      });
+  });
+
+  it('deletes and returns the deleted actor', () => {
+    return request(app)
+      .delete(`/api/v1/actors/${actors[2]._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: actors[2]._id.toString(),
+          name: actors[2].name,
+          __v: 0
+        });
+      });
+  });
+
+  it('returns an error when attempting to delete an actor who is in a film', () => {
+    return request(app)
+      .delete(`/api/v1/actors/${actors[0]._id}`)
+      .then(res => {
+        expect(res.status).toEqual(409);
       });
   });
 });
