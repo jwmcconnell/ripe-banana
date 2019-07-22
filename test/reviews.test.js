@@ -67,6 +67,34 @@ describe('review routes', () => {
       });
   });
 
+  it('creates a review and returns it', async() => {
+    return request(app)
+      .post('/api/v1/reviews')
+      .send({
+        rating: 0,
+        reviewer: reviewer._id,
+        review: 'Its an absolute wonder!',
+        film: film._id
+      })
+      .then(res => {
+        expect(res.status).toEqual(400);
+      });
+  });
+
+  it('creates a review and returns it', async() => {
+    return request(app)
+      .post('/api/v1/reviews')
+      .send({
+        rating: 6,
+        reviewer: reviewer._id,
+        review: 'Its an absolute wonder!',
+        film: film._id
+      })
+      .then(res => {
+        expect(res.status).toEqual(400);
+      });
+  });
+
   it('returns a list of reviews limited to the 100 most recent', async() => {
     let manyReviews = new Array(150);
     for(let i = 0; i < manyReviews.length; i++) {
